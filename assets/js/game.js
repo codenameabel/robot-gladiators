@@ -19,14 +19,15 @@ var fight = function (enemyName) {
             if (confirmSkip) {
                 window.alert(playerName + " has chosen to skip the fight. Goodbye!");
                 //  subtract money for skipping 
-                playerMoney = playerMoney - 10;
+                playerMoney = Math.max(0, playerMoney - 10);
                 console.log("playerMoney", playerMoney);
                 break;
             }
         }
 
         //Subtract the value of `playerAttack` from the value of `enemyHealth` and use that result to update the value in the `enemyHealth` variable
-        enemyHealth = enemyHealth - playerAttack;
+        var damage = randomNumber(playerAttack - 3, playerAttack)
+        enemyHealth = Math.max(0, enemyHealth - playerAttack);
         // Log a resulting message to the console so we know that it worked.
         console.log(
             playerName + "attacked " + enemyName + ". " + enemyName + " now has " + enemyHealth + " health remaining."
@@ -44,7 +45,9 @@ var fight = function (enemyName) {
             window.alert(enemyName + " still has " + enemyHealth + " health left.");
         }
         // Subtract the value of `enemyAttack` from the value of `playerHealth` and use that result to update the value in the `playerHealth` variable.
-        playerHealth = playerHealth - enemyAttack;
+        var damage = randomNumber(enemyAttack - 3, enemyAttack);
+        playerHealth = Math.max(0, playerHealth - damage);
+
         // Log a resulting message to the console so we know that it worked.
         console.log(
             enemyName + " attacked " + playerName + ". " + playerName + " now has " + playerHealth + " health remaining."
@@ -64,7 +67,7 @@ var startGame = function () {
     // debugger;
     // reset player stats 
     playerHealth = 100;
-    playerAttack = 25;
+    playerAttack = 10;
     playerMoney = 10;
 
     for (var i = 0; i < enemyNames.length; i++) {
@@ -75,11 +78,9 @@ var startGame = function () {
             // pick new enemy to fight based on the index of the enemyNames array
             var pickedEnemyName = enemyNames[i];
 
-            // reset enemyHealth before starting new fight
-            enemyHealth = 50;
-
-            // use debugger to pause script from running and check what's going on at that moment in the code
-
+            // generate random damage value based on player's attack power
+            var damage = randomNumber(playerAttack - 3, playerAttack);
+            enemyHealth = Math.max(0, enemyHealth - damage);
 
             // pass the pickedEnemyName variable's value into the fight function, where it will assume the value of the enemyName parameter
             fight(pickedEnemyName);
@@ -149,12 +150,12 @@ var shop = function () {
 
         case "UPGRADE":
         case "upgrade":
-            if (playerMoney >= 7) { 
-            window.alert("Upgrading player's attack by 6 for 7 dollars.");
+            if (playerMoney >= 7) {
+                window.alert("Upgrading player's attack by 6 for 7 dollars.");
 
-            // increase player attack and decrease money
-            playerAttack = playerAttack + 6;
-            playerMoney = playerMoney - 7;
+                // increase player attack and decrease money
+                playerAttack = playerAttack + 6;
+                playerMoney = playerMoney - 7;
 
             } else {
                 window.alert("You don't have enough money!");
@@ -177,6 +178,12 @@ var shop = function () {
 
     // use switch to carry pout action
 
+};
+
+var randomNumber = function(min, max) {
+    var value = Math.floor(Math.random() * (max - min + 1) + min); 
+    
+    return value;
 };
 
 startGame();
